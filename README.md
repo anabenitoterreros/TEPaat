@@ -1,7 +1,6 @@
 # PROJECT
 ## INFO
-This repo contains our implementations of the group members (see below) inline with the requirements of CHE 4230 Advanced Process Control Systems – Spring 2023
-Semester Project. The plant setup is as shown below:
+This repo contains our implementations of the CHE 4230 Advanced Process Control Systems – Spring 2023 Semester Project. The project has a plant setup as shown below:
 
 ![Screenshot](./reports/flowdiagram.png)
 
