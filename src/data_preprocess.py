@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 class DataPreprocessing():
     def __init__(self):
@@ -25,3 +26,13 @@ class DataPreprocessing():
             self.data = self.data.to_numpy()
 
         return self.data
+
+    def scale_data(self, data):
+        # create scaler
+        scaler = MinMaxScaler()
+        # fit data and then transform
+        norm_data = scaler.fit_transform(data)
+        # convert norm_data to dataframe
+        norm_data = pd.DataFrame(norm_data, columns=list(data.columns))
+        return norm_data
+
