@@ -27,12 +27,12 @@ class DataPreprocessing():
 
         return self.data
 
-    def scale_data(self, data):
+    def scale_data(self):
         # create scaler
         scaler = MinMaxScaler()
         # fit data and then transform
-        norm_data = scaler.fit_transform(data)
+        norm_data = scaler.fit_transform(self.data)
         # convert norm_data to dataframe
-        norm_data = pd.DataFrame(norm_data, columns=list(data.columns))
-        return norm_data
+        self.norm_data = pd.DataFrame(norm_data, columns=list(self.data.columns))
+        return self.norm_data
 
