@@ -37,12 +37,12 @@ class DimensionalityReduction():
 
         return self.tSNE_data
 
-    def fit_fastICA(self, n_comp = 2):
+    def fit_fastICA(self, n_comp = 2, iterations = 30000):
         """
         params: number of components
         returns: fastICA model and transformed data
         """
-        fastICA = FastICA(n_components = n_comp, random_state = 0, whiten='unit-variance')
+        fastICA = FastICA(n_components = n_comp, random_state = 0, whiten='unit-variance', max_iter = iterations)
         
         self.fastICA_data = fastICA.fit_transform(self.data)
 
