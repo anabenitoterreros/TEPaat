@@ -7,29 +7,31 @@ import seaborn as sns
 # dimensionality function
 from sklearn.decomposition import PCA, FastICA
 from sklearn.manifold import TSNE, Isomap, SpectralEmbedding
+import umap
 
 class DimensionalityReduction():
-    def __init__(self, data):
+    def __init__(self, data, n_comp):
         self.data = data
+        self.n_comp = n_comp
         
-    def fit_PCA(self, n_comp = 2):
+    def fit_PCA(self):
         """
         params: number of components
         returns: pca model and transformed data
         """
-        self.pca = PCA(n_components = n_comp, random_state = 104)
+        self.pca = PCA(n_components = self.n_comp, random_state = 104)
         self.pca.fit(self.data)
         self.pca_data = self.pca.transform(self.data)
         
         return self.pca_data
 
-    def fit_tSNE(self, n_comp = 2, perplexity = 5):
+    def fit_tSNE(self, perplexity = 5):
         """
         params: number of components
         returns: pca model and transformed data
         """
         tSNE = TSNE(
-                    n_components = n_comp, learning_rate = 'auto',
+                    n_components = self.n_comp, learning_rate = 'auto',
                     init = 'random', perplexity = perplexity
                     )
 
@@ -37,38 +39,47 @@ class DimensionalityReduction():
 
         return self.tSNE_data
 
-    def fit_fastICA(self, n_comp = 2, iterations = 30000):
+    def fit_fastICA(self, iterations = 30000):
         """
         params: number of components
         returns: fastICA model and transformed data
         """
-        fastICA = FastICA(n_components = n_comp, random_state = 0, whiten='unit-variance', max_iter = iterations)
+        fastICA = FastICA(n_components = self.n_comp, random_state = 0, whiten='unit-variance', max_iter = iterations)
         
         self.fastICA_data = fastICA.fit_transform(self.data)
 
         return self.fastICA_data
     
-    def fit_isomap(self, n_comp = 2, neighbors = 5):
+    def fit_isomap(self, neighbors = 5):
         """
         params: number of components
         returns: fastICA model and transformed data
         """
-        ISOMAP = Isomap(n_neighbors = neighbors, radius=None, n_components = n_comp)
+        ISOMAP = Isomap(n_neighbors = neighbors, radius=None, n_components = self.n_comp)
         
         self.ISOMAP_data = ISOMAP.fit_transform(self.data)
 
         return self.ISOMAP_data
 
-    def fit_SpectralEmbedding(self, n_comp = 2):
+    def fit_SpectralEmbedding(self):
         """
         params: number of components
         returns: fastICA model and transformed data
         """
-        embedding = SpectralEmbedding(n_components = n_comp)
+        embedding = SpectralEmbedding(n_components = self.n_comp)
         self.embedding_data = embedding.fit_transform(self.data)
 
         return self.embedding_data
         
+    def fit_UMAP(self, state = 16):
+        """
+        params: number of components
+        returns: UMAP model and transformed data
+        """
+        umap_model = umap.UMAP(n_components = self.n_comp, random_state = state)
+        self.umap_data = umap_model.fit_transform(self.data)
+
+        return self.umap_data
 
     def plot_pcaVariance(self):
         """
@@ -82,27 +93,27 @@ class DimensionalityReduction():
         plt.ylabel('Explained variance')
         plt.savefig('./reports/elbow_plot.png', dpi=100)
 
-    def plot_2D_scatter(self, data, labels = {'x': 'PCA 1', 'y': 'PCA 2', 'type': 'PCA'}):
+    def plot_2D_scatter(self, data, type = 'PCA'):
         """
         params: data (a 2D data) & labels (a dictionary)
         returns: profile of scatterplot of transformed data
         """
-        title = labels['type']
 
         plt.figure(figsize=(6, 4))
-        sns.scatterplot( x = data[:, 0], y = data[:, 1], s = 70)
+        plt.scatter(x = data[:, 0], y = data[:, 1])
 
-        plt.xlabel(labels['x'])
-        plt.ylabel(labels['y'])
-        plt.title(title)
-        plt.savefig(f'./reports/{title}_2D_scatterplot.png') 
+        plt.xlabel(f"{type} 1")
+        plt.ylabel(f"{type} 2")
+        plt.xlim([data[:, 0].min() - 0.5, data[:, 0].max() + 0.5])
+        plt.ylim([data[:, 1].min() - 0.5, data[:, 1].max() + 0.5])
+        plt.title(type)
+        plt.savefig(f'./reports/{type}_2D_scatterplot.png') 
 
-    def plot_3D_scatter(self, data, labels = {'x': 'PCA 1', 'y': 'PCA 2', 'z': 'PCA 3', 'type': 'PCA'}):
+    def plot_3D_scatter(self, data, type = 'PCA'):
         """
         params: data (a 3D data) & labels (a dictionary)
         returns: profile of scatterplot of transformed data
         """
-        title = labels['type']
 
         fig = plt.figure(figsize=(6,4))
         sns.set_style("whitegrid", {'axes.grid' : False})
@@ -115,14 +126,75 @@ class DimensionalityReduction():
 
         axs.scatter(x, y, z, c = x, marker='o')
 
-        axs.set_xlabel(labels['x'])
-        axs.set_ylabel(labels['y'])
-        axs.set_zlabel(labels['z'])
+        axs.set_xlabel(f"{type} 1")
+        axs.set_ylabel(f"{type} 3")
+        axs.set_zlabel(f"{type} 3")
+        axs.set_xlim(xmin = x.min(), xmax=x.max())
+        axs.set_ylim(ymin = y.min(), ymax=y.max())
 
         plt.show()
-        plt.savefig(f'./reports/{title}_3D_scatterplot.png')
+        plt.savefig(f'./reports/{type}_3D_scatterplot.png')
 
-    def plot_perplexity_effect(self, n_comp = 2, perpelixty_list = [5, 10, 15, 20, 25, 30]):
+
+
+    def compare_methods(self, fig_size = (6, 3)):
+        """
+        params: data (a 2D data) & labels (a dictionary)
+        returns: profile of scatterplot of transformed data
+        """
+        fig = plt.figure(figsize = fig_size, layout='constrained')
+        sns.set_style("whitegrid", {'axes.grid' : False})
+
+        # A
+        axs = fig.add_subplot(231)
+        x = self.pca_data[:, 0]
+        y = self.pca_data[:, 1]
+
+        axs.scatter(x, y); axs.set_title('PCA')
+
+        # B
+        axs = fig.add_subplot(232)
+        x = self.tSNE_data[:, 0]
+        y = self.tSNE_data[:, 1]
+
+        axs.scatter(x, y); axs.set_title('tSNE')
+
+        # C
+        axs = fig.add_subplot(233)
+        x = self.fastICA_data[:, 0]
+        y = self.fastICA_data[:, 1]
+
+        axs.scatter(x, y); axs.set_title('ICA')
+
+        # ISOMAP
+        axs = fig.add_subplot(234)
+        x = self.ISOMAP_data[:, 0]
+        y = self.ISOMAP_data[:, 1]
+
+        axs.scatter(x, y); axs.set_title('ISOMAP')
+
+        # Spectral Embedding
+        axs = fig.add_subplot(235)
+        x = self.embedding_data[:, 0]
+        y = self.embedding_data[:, 1]
+
+        axs.scatter(x, y); axs.set_title('Spectral Embedding')
+
+        # UMAP
+        axs = fig.add_subplot(236)
+        x = self.umap_data[:, 0]
+        y = self.umap_data[:, 1]
+
+        axs.scatter(x, y); axs.set_title('UMAP')
+
+        # display the figure
+        plt.show()
+
+        # save figure
+        plt.savefig(f'./reports/all_DRs_2D_scatterplot.png')
+
+
+    def plot_perplexity_effect(self, perpelixty_list = [5, 10, 15, 20, 25, 30]):
         """
         params: list of perplexity
         returns: profile of scatterplot at varying perplexity
@@ -132,7 +204,7 @@ class DimensionalityReduction():
         for pp in perpelixty_list:
             
             tSNE = TSNE(
-                        n_components = n_comp, learning_rate = 'auto',
+                        n_components = self.n_comp, learning_rate = 'auto',
                         init = 'random', perplexity = pp)
 
             tSNE_data = tSNE.fit_transform(self.data)
@@ -140,7 +212,7 @@ class DimensionalityReduction():
             result_tSNE_data['pp' + str(pp)] = tSNE_data
         
         
-        if n_comp == 2:
+        if self.n_comp == 2:
             #
             # create a figure and a subplot grid with 3 rows and 2 columns
             fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(6, 4))
@@ -168,7 +240,7 @@ class DimensionalityReduction():
             # save figure
             plt.savefig('./reports/tSNE_2D_scatterplot_manyPerplexity.png')
 
-        if n_comp == 3:
+        if self.n_comp == 3:
             #
             fig = plt.figure(figsize=(6, 4), layout='constrained')
             sns.set_style("whitegrid", {'axes.grid' : False})
@@ -205,7 +277,7 @@ class DimensionalityReduction():
             plt.savefig('./reports/tSNE_3D_scatterplot_manyPerplexity.png')
 
     
-    def plot_neighbors_effect(self, n_comp = 2, neighborsint = [5, 10, 15, 20, 25, 30]):
+    def plot_neighbors_effect(self, neighborsint = [5, 10, 15, 20, 25, 30]):
         """
         params: list of perplexity
         returns: profile of scatterplot at varying neighbor number
@@ -215,14 +287,14 @@ class DimensionalityReduction():
 
         for nb in neighborsint:
 
-            Ismap = Isomap(n_neighbors=nb, radius=None, n_components = n_comp)
+            Ismap = Isomap(n_neighbors=nb, radius=None, n_components = self.n_comp)
 
             ismap_data = Ismap.fit_transform(self.data)
             
             result_Ismap_data['nb' + str(nb)] = ismap_data
 
 
-        if n_comp == 2:
+        if self.n_comp == 2:
             # create a figure and a subplot grid with 3 rows and 2 columns
             fig, axs = plt.subplots(nrows=3, ncols=2, figsize=(6, 4))
 
@@ -251,7 +323,7 @@ class DimensionalityReduction():
             # save figure
             plt.savefig('./reports/isomap_2D_scatterplot_manyNeighbors.png')
 
-        if n_comp == 3:
+        if self.n_comp == 3:
             #
             fig = plt.figure(figsize=(6, 4), layout='constrained')
             sns.set_style("whitegrid", {'axes.grid' : False})
@@ -286,3 +358,57 @@ class DimensionalityReduction():
             plt.show()
             # save figure
             plt.savefig('./reports/tSNE_3D_scatterplot_manyNeighbors.png')
+
+
+    # Effect of min_samples
+    def effect_of_umapneigbors(self, state = 16, neighbors = [2, 5, 10, 20, 30, 50], type = 'UMAP'):
+
+        result_umap_2D_data = {}
+
+        for idx, param in enumerate(neighbors):
+
+            umap_2D = umap.UMAP(n_neighbors = param, n_components = self.n_comp, random_state = state)
+
+            umap_2D_data = umap_2D.fit_transform(self.data)
+
+            result_umap_2D_data['M' + str(idx)] = umap_2D_data
+
+        # create a figure and a subplot grid with 3 rows and 2 columns
+
+        fig = plt.figure(figsize=(6, 4), layout='constrained')
+        sns.set_style("whitegrid", {'axes.grid' : False})
+        
+        # create scatter plots on the subplots using Seaborn
+        x = self.data[:, 0]; y = self.data[:, 1]
+        
+        axs321 = fig.add_subplot(231)
+        axs321.scatter(x, y, c = result_umap_2D_data['M0'],  s = 10, cmap = 'hsv')
+        
+        axs322 = fig.add_subplot(232)
+        axs322.scatter(x, y, c = result_umap_2D_data['M1'],  s = 10, cmap = 'hsv')
+        
+        axs323 = fig.add_subplot(233)
+        axs323.scatter(x, y, c = result_umap_2D_data['M2'],  s = 10, cmap = 'hsv')
+        
+        axs324 = fig.add_subplot(234)
+        axs324.scatter(x, y, c = result_umap_2D_data['M3'],  s = 10, cmap = 'hsv')
+        
+        axs325 = fig.add_subplot(235)
+        axs325.scatter(x, y, c = result_umap_2D_data['M4'],  s = 10, cmap = 'hsv')
+        
+        axs326 = fig.add_subplot(236)
+        axs326.scatter(x, y, c = result_umap_2D_data['M5'],  s = 10, cmap = 'hsv')
+
+        # set titles for each subplot
+        axs321.set_title(f"n_neighbors : {neighbors[0]}"); axs321.set_xlabel(f'{type[0]} 1'); axs321.set_ylabel(f'{type[0]} 2')
+        axs322.set_title(f"n_neighbors : {neighbors[1]}"); axs322.set_xlabel(f'{type[0]} 1'); axs322.set_ylabel(f'{type[0]} 2')
+        axs323.set_title(f"n_neighbors : {neighbors[2]}"); axs323.set_xlabel(f'{type[0]} 1'); axs323.set_ylabel(f'{type[0]} 2')
+        axs324.set_title(f"n_neighbors : {neighbors[3]}"); axs324.set_xlabel(f'{type[0]} 1'); axs324.set_ylabel(f'{type[0]} 2')
+        axs325.set_title(f"n_neighbors : {neighbors[4]}"); axs325.set_xlabel(f'{type[0]} 1'); axs325.set_ylabel(f'{type[0]} 2')
+        axs326.set_title(f"n_neighbors : {neighbors[5]}"); axs326.set_xlabel(f'{type[0]} 1'); axs326.set_ylabel(f'{type[0]} 2')
+
+        # display the figure
+        plt.show()
+
+        # save figure
+        plt.savefig(f'./reports/{type}_2D_scatterplot_manyNeighbors.png')
