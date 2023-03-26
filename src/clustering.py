@@ -10,6 +10,8 @@ from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering
 import hdbscan
 from sklearn.metrics import davies_bouldin_score, silhouette_score, calinski_harabasz_score
 
+import pickle
+
 #3 import dimensionality module
 from src.dimensionality import DimensionalityReduction
 
@@ -22,17 +24,17 @@ class ClusterAnalysis(DimensionalityReduction):
         # create algorithm
         kmeans = KMeans(n_clusters = self.clusters, random_state = state, n_init = init)
         # fit data
-        kmeans_with_DR = kmeans.fit(self.data)
+        self.kmeans_with_DR = kmeans.fit(self.data)
         # predict cluster
-        self.kmean_data = kmeans_with_DR.predict(self.data)
+        self.kmean_data = self.kmeans_with_DR.predict(self.data)
         
         return self.kmean_data
 
     def create_DBSCAN(self, eps_ = 0.1, min_sample_ = 5):
         # create algorithm
-        dbscan = DBSCAN(eps = eps_, min_samples = min_sample_)
+        self.dbscan = DBSCAN(eps = eps_, min_samples = min_sample_)
         # fit data and predict cluster
-        self.dbscan_data = dbscan.fit_predict(self.data)
+        self.dbscan_data = self.dbscan.fit_predict(self.data)
 
         return self.dbscan_data
     
@@ -40,17 +42,17 @@ class ClusterAnalysis(DimensionalityReduction):
         # create algorithm
         aggloClust = AgglomerativeClustering(n_clusters = self.clusters)
         # fit data
-        aggloClust_with_DR = aggloClust.fit(self.data)
+        self.aggloClust_with_DR = aggloClust.fit(self.data)
         # predict cluster
-        self.aggloClust_data = aggloClust_with_DR.labels_
+        self.aggloClust_data = self.aggloClust_with_DR.labels_
 
         return self.aggloClust_data
 
     def create_HDBSCAN(self, min_cluster_size_ = 3, min_samples_ = 50):
         # instantiate algorithm
-        hdbscan_ = hdbscan.HDBSCAN(min_cluster_size = min_cluster_size_, min_samples = min_samples_)
+        self.hdbscan_ = hdbscan.HDBSCAN(min_cluster_size = min_cluster_size_, min_samples = min_samples_)
         # fit data and predict cluster
-        self.HDBSCAN_data = hdbscan_.fit_predict(self.data)
+        self.HDBSCAN_data = self.hdbscan_.fit_predict(self.data)
 
         return self.HDBSCAN_data
 
@@ -125,5 +127,27 @@ class ClusterAnalysis(DimensionalityReduction):
 
         # save figure
         plt.savefig(f'./reports/{type}_allClustering_2D_scatterplot.png')
+
+
+
+
+    def save_model(self, filename = "Kmeans", DR = 'umap'):
+        """
+        returns the fitted model.
+        """
+        # Save the model to a file using pickle
+        if filename == "Kmeans":
+            model = self.kmeans_with_DR
+
+        if filename == "DBSCAN":
+            model = self.dbscan
+
+        if filename == "AgglomerativeClustering":
+            model = self.aggloClust_with_DR
+
+        if filename == "HDBSCAN":
+            model = self.hdbscan_
+
+        pickle.dump(model, open(f'./models/{DR}_{filename}_model.pkl', 'wb'))
 
     

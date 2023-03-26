@@ -8,6 +8,8 @@ import seaborn as sns
 from sklearn.decomposition import PCA, FastICA
 from sklearn.manifold import TSNE, Isomap, SpectralEmbedding
 import umap
+# model saver
+import pickle
 
 class DimensionalityReduction():
     def __init__(self, data, n_comp):
@@ -30,12 +32,12 @@ class DimensionalityReduction():
         params: number of components
         returns: pca model and transformed data
         """
-        tSNE = TSNE(
+        self.tSNE = TSNE(
                     n_components = self.n_comp, learning_rate = 'auto',
                     init = 'random', perplexity = perplexity
                     )
 
-        self.tSNE_data = tSNE.fit_transform(self.data)
+        self.tSNE_data = self.tSNE.fit_transform(self.data)
 
         return self.tSNE_data
 
@@ -44,9 +46,9 @@ class DimensionalityReduction():
         params: number of components
         returns: fastICA model and transformed data
         """
-        fastICA = FastICA(n_components = self.n_comp, random_state = 0, whiten='unit-variance', max_iter = iterations)
+        self.fastICA = FastICA(n_components = self.n_comp, random_state = 0, whiten='unit-variance', max_iter = iterations)
         
-        self.fastICA_data = fastICA.fit_transform(self.data)
+        self.fastICA_data = self.fastICA.fit_transform(self.data)
 
         return self.fastICA_data
     
@@ -55,9 +57,9 @@ class DimensionalityReduction():
         params: number of components
         returns: fastICA model and transformed data
         """
-        ISOMAP = Isomap(n_neighbors = neighbors, radius=None, n_components = self.n_comp)
+        self.ISOMAP = Isomap(n_neighbors = neighbors, radius=None, n_components = self.n_comp)
         
-        self.ISOMAP_data = ISOMAP.fit_transform(self.data)
+        self.ISOMAP_data = self.ISOMAP.fit_transform(self.data)
 
         return self.ISOMAP_data
 
@@ -66,8 +68,8 @@ class DimensionalityReduction():
         params: number of components
         returns: fastICA model and transformed data
         """
-        embedding = SpectralEmbedding(n_components = self.n_comp)
-        self.embedding_data = embedding.fit_transform(self.data)
+        self.embedding = SpectralEmbedding(n_components = self.n_comp)
+        self.embedding_data = self.embedding.fit_transform(self.data)
 
         return self.embedding_data
         
@@ -76,8 +78,8 @@ class DimensionalityReduction():
         params: number of components
         returns: UMAP model and transformed data
         """
-        umap_model = umap.UMAP(n_components = self.n_comp, random_state = state)
-        self.umap_data = umap_model.fit_transform(self.data)
+        self.umap_model = umap.UMAP(n_components = self.n_comp, random_state = state)
+        self.umap_data = self.umap_model.fit_transform(self.data)
 
         return self.umap_data
 
@@ -412,3 +414,27 @@ class DimensionalityReduction():
 
         # save figure
         plt.savefig(f'./reports/{type}_2D_scatterplot_manyNeighbors.png')
+
+
+
+    def save_model(self, filename = "umap"):
+        """
+        returns the fitted model.
+        """
+        # Save the model to a file using pickle
+        if filename == "pca":
+            model = self.pca
+
+        if filename == "tSNE":
+            model = self.tSNE
+
+        if filename == "ica":
+            model = self.fastICA
+
+        if filename == "SE":
+            model = self.embedding
+            
+        if filename == "umap":
+            model = self.umap_model
+
+        pickle.dump(model, open(f'./models/{filename}_model.pkl', 'wb'))
