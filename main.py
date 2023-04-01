@@ -22,28 +22,35 @@ class package:
         return data
     
     # predict data based on fitted model
-    def predict(self, X):
+    def predict(self, X, type = "ANN"):
         """
         params: features X
         return: predictions """
-        # load model
+        # load models
         scaler = pickle.load(open("./models/scaler_MinMax_model.pkl", 'rb'))
-        umap = pickle.load(open("./models/umap_DBSCAN_model.pkl", 'rb'))
-        ann = pickle.load(open("./models/ANN_DBSCAN_classifier_model.pkl", 'rb'))
-        svc = pickle.load(open("./models/SVC_DBSCAN_classifier_model.pkl", 'rb'))
+        umap = pickle.load(open("./models/umap_model.pkl", 'rb'))
+        if type == "ANN":
+            classifier = pickle.load(open("./models/ANN_DBSCAN_classifier_model.pkl", 'rb'))
+        if type == "SVC":
+            classifier = pickle.load(open("./models/SVC_DBSCAN_classifier_model.pkl", 'rb'))
+        
         # normalize data
-        norm_data = scaler.predict(X)
+        norm_data = scaler.transform(X)
         # reduce the data
         umap_data = umap.transform(norm_data)
         # classify data
-        ann_data = ann.predict(umap_data)
-        #svc_data = svc.predict(umap_data)
-        return ann_data
+        pred_label_data = classifier.predict(umap_data)
+
+        return pred_label_data
 
     # compute the accuracy of a model
     def eval_accuracy(self, predictions, target):
         """
         params: predictions and target
         return: accuracy score """
+
+        # due to inconsistency in the labels of the ground truth label and the predicted label. A correct factor was introduced.
+        
+        target = target['label'].replace({2: 1, 3: 3, 6: 4, 8: 0, 13: 2})
 
         return accuracy_score(target, predictions)

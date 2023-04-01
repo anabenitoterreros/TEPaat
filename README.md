@@ -15,3 +15,6 @@ This repo contains our implementations of the CHE 4230 Advanced Process Control 
 >**src** contains the python modules. \
 >**docs** contains the other non-related PDF docs. \
 >**reports** contains the analysis (PDF) and figures.
+## HOW TO USE
+
+>**incoming** 
