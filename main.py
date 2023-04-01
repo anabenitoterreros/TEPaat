@@ -49,4 +49,8 @@ class package:
         params: predictions and target
         return: accuracy score """
 
+        # due to inconsistency in the labels of the ground truth label and the predicted label. A correct factor was introduced.
+        
+        target = target['label'].replace({2: 1, 3: 3, 6: 4, 8: 0, 13: 2})
+
         return accuracy_score(target, predictions)
