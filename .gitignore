@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+reports/Isomap_3D_scatterplot.png
+reports/pca_2D_scatterplot.png
