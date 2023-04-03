@@ -2,7 +2,7 @@ import pandas as pd
 import pickle
 from sklearn.metrics import accuracy_score
 
-class package:
+class TEPaat:
     def __init__(self):
         pass
         
