@@ -6,8 +6,9 @@ with open("README.md", "r") as readme_file:
 requirements = [
                 "numpy==1.23.5",
                 "pandas==1.5.3",
-                "scikit-learn==1.2.1"
-                "umap-learn==0.5.3 "
+                "scikit-learn==1.2.1",
+                "umap-learn==0.5.3 ",
+                "pickleshare==0.7.5"
                 ]
 
 setup(
