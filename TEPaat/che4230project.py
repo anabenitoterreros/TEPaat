@@ -31,10 +31,6 @@ class TEPaat:
         # load models
         # same as those in the models folder of the main project directory 
         # ensure that the working directory is the same as trained models directory
-        try:
-            os.chir("./trained_models")
-        except:
-            os.chdir("./TEPaat/trained_models")
 
         scaler = pickle.load(open("scaler_MinMax_model.pkl", 'rb'))
         umap = pickle.load(open("umap_model.pkl", 'rb'))
