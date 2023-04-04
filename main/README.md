@@ -1,13 +1,3 @@
-Metadata-Version: 2.1
-Name: TEPaat
-Version: 1.0
-Summary: TEPaat: A python framework to perform dimensionality reduction and classification of a given process data
-Home-page: https://github.com/anabenitoterreros/TEPaat
-Author: Amanda Ana & Teslim
-Author-email: tolayi1@lsu.edu
-Classifier: Programming Language :: Python :: 3.8.5
-Description-Content-Type: text/markdown
-
 TEPaat
 =========================
 
