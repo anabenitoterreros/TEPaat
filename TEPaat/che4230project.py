@@ -1,6 +1,7 @@
 import pandas as pd
 import pickle
 from sklearn.metrics import accuracy_score
+import os
 
 class TEPaat:
     def __init__(self):
@@ -26,13 +27,21 @@ class TEPaat:
         """
         params: features X
         return: predictions """
+        print(os.getcwd())
         # load models
-        scaler = pickle.load(open("./models/scaler_MinMax_model.pkl", 'rb'))
-        umap = pickle.load(open("./models/umap_model.pkl", 'rb'))
+        # same as those in the models folder of the main project directory 
+        # ensure that the working directory is the same as trained models directory
+        try:
+            os.chir("./trained_models")
+        except:
+            os.chdir("./TEPaat/trained_models")
+
+        scaler = pickle.load(open("scaler_MinMax_model.pkl", 'rb'))
+        umap = pickle.load(open("umap_model.pkl", 'rb'))
         if type == "ANN":
-            classifier = pickle.load(open("./models/ANN_DBSCAN_classifier_model.pkl", 'rb'))
+            classifier = pickle.load(open("ANN_DBSCAN_classifier_model.pkl", 'rb'))
         if type == "SVC":
-            classifier = pickle.load(open("./models/SVC_DBSCAN_classifier_model.pkl", 'rb'))
+            classifier = pickle.load(open("SVC_DBSCAN_classifier_model.pkl", 'rb'))
         
         # normalize data
         norm_data = scaler.transform(X)

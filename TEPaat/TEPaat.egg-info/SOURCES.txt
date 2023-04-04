@@ -1,7 +1,0 @@
-README.md
-setup.py
-TEPaat.egg-info/PKG-INFO
-TEPaat.egg-info/SOURCES.txt
-TEPaat.egg-info/dependency_links.txt
-TEPaat.egg-info/requires.txt
-TEPaat.egg-info/top_level.txt

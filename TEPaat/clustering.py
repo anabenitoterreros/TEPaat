@@ -13,7 +13,7 @@ from sklearn.metrics import davies_bouldin_score, silhouette_score, calinski_har
 import pickle
 
 #3 import dimensionality module
-from src.dimensionality import DimensionalityReduction
+from TEPaat.dimensionality import DimensionalityReduction
 
 class ClusterAnalysis(DimensionalityReduction):
     def __init__(self, data, clusters):
