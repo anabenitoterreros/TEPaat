@@ -21,9 +21,9 @@ Though several parts of the notebooks uses other tools. The final package use on
 the aforemented 4 tools. To install package, do the following:
 ```python
 # install package
-pip install TEPaat
+pip install git+https://github.com/anabenitoterreros/TEPaat.git@build
 # use package
-from TEPaat import TEPaat
+from TEPaat.che4230project import TEPaat
 test = TEPaat()
 # load data
 data = test.load_data(path_to_featuredata, no_toplabel = False) # no_toplabel = False means there is a column name
