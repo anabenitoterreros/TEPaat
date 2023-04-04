@@ -20,7 +20,9 @@ setup(
         long_description=readme,
         long_description_content_type = 'text/markdown',
         url = 'https://github.com/anabenitoterreros/TEPaat',
-        packages = find_packages(),
+        packages = find_packages(where = "models"),
+        package_data={"": ["models"]},
+        include_package_data = True,
         install_requires = requirements,
         classifiers = [
             'Programming Language :: Python :: 3.8.5'
