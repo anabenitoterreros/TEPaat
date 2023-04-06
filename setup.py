@@ -8,7 +8,8 @@ requirements = [
                 "pandas==1.5.3",
                 "scikit-learn==1.2.1",
                 "umap-learn==0.5.3 ",
-                "pickleshare==0.7.5"
+                "pickleshare==0.7.5",
+                'wget==3.2'
                 ]
 
 setup(
@@ -20,8 +21,7 @@ setup(
         long_description=readme,
         long_description_content_type = 'text/markdown',
         url = 'https://github.com/anabenitoterreros/TEPaat',
-        packages = find_packages(where = "models"),
-        package_data={"": ["models"]},
+        packages = find_packages(),
         include_package_data = True,
         install_requires = requirements,
         classifiers = [

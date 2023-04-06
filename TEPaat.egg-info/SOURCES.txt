@@ -11,3 +11,4 @@ TEPaat.egg-info/SOURCES.txt
 TEPaat.egg-info/dependency_links.txt
 TEPaat.egg-info/requires.txt
 TEPaat.egg-info/top_level.txt
+models/__init__.py

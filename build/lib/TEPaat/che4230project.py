@@ -2,6 +2,7 @@ import pandas as pd
 import pickle
 from sklearn.metrics import accuracy_score
 import os
+import wget
 
 class TEPaat:
     def __init__(self):
@@ -31,12 +32,24 @@ class TEPaat:
         # load models
         # same as those in the models folder of the main project directory 
         # ensure that the working directory is the same as trained models directory
+  
+        # get files
+        url_umap = 'https://github.com/anabenitoterreros/TEPaat/blob/main/models/umap_model.pkl'
+        url_scaler = 'https://github.com/anabenitoterreros/TEPaat/blob/main/models/scaler_MinMax_model.pkl'
+        
+        wget.download(url_umap)
+        wget.download(url_scaler)
+        
 
         scaler = pickle.load(open("scaler_MinMax_model.pkl", 'rb'))
         umap = pickle.load(open("umap_model.pkl", 'rb'))
         if type == "ANN":
+            url_ann_classifier = 'https://github.com/anabenitoterreros/TEPaat/blob/main/models/ANN_DBSCAN_classifier_model.pkl'
+            wget.download(url_ann_classifier)
             classifier = pickle.load(open("ANN_DBSCAN_classifier_model.pkl", 'rb'))
         if type == "SVC":
+            url_sv_classifier = 'https://github.com/anabenitoterreros/TEPaat/blob/main/models/SVC_DBSCAN_classifier_model.pkl'
+            wget.download(url_sv_classifier)
             classifier = pickle.load(open("SVC_DBSCAN_classifier_model.pkl", 'rb'))
         
         # normalize data
