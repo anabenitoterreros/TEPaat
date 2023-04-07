@@ -9,7 +9,9 @@ requirements = [
                 "scikit-learn==1.2.1",
                 "umap-learn==0.5.3 ",
                 "pickleshare==0.7.5",
-                'wget==3.2'
+                'wget==3.2',
+                "zipfile36==0.1.3",
+                "zipp==3.12.1"
                 ]
 
 setup(
