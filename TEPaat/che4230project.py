@@ -1,8 +1,6 @@
 import pandas as pd
 import pickle
 from sklearn.metrics import accuracy_score
-import wget
-import zipfile
 
 class TEPaat:
     def __init__(self):
@@ -32,22 +30,17 @@ class TEPaat:
         # same as those in the models folder of the main project directory 
         # ensure that the working directory is the same as trained models directory
   
-        # get files
-        url_umap = 'https://github.com/anabenitoterreros/TEPaat/blob/main/trained_models.zip'
-        
-        wget.download(url_umap)
-
-        with zipfile.ZipFile("trained_models.zip","r") as zip_ref:
-            zip_ref.extractall("targetdir")
     
-        
+        # ensure that you download + unzip the trained models in https://github.com/anabenitoterreros/TEPaat/blob/main/TEPaat/trained_models.zip
+        # into your current working directory. do not charge the name of the uncompressed folder "trained_models"
 
-        scaler = pickle.load(open("targetdir/scaler_MinMax_model.pkl", 'rb'))
-        umap = pickle.load(open("targetdir/umap_model.pkl", 'rb'))
+
+        scaler = pickle.load(open("trained_models/scaler_MinMax_model.pkl", 'rb'))
+        umap = pickle.load(open("trained_models/umap_model.pkl", 'rb'))
         if type == "ANN":
-            classifier = pickle.load(open("targetdir/ANN_DBSCAN_classifier_model.pkl", 'rb'))
+            classifier = pickle.load(open("trained_models/ANN_DBSCAN_classifier_model.pkl", 'rb'))
         if type == "SVC":
-            classifier = pickle.load(open("targetdir/SVC_DBSCAN_classifier_model.pkl", 'rb'))
+            classifier = pickle.load(open("trained_models/SVC_DBSCAN_classifier_model.pkl", 'rb'))
         
         # normalize data
         norm_data = scaler.transform(X)

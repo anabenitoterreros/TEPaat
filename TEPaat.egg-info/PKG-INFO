@@ -31,7 +31,7 @@ Though several parts of the notebooks uses other tools. The final package use on
 the aforemented 4 tools. To install package, do the following:
 ```python
 # install package
-pip install git+https://github.com/anabenitoterreros/TEPaat.git@build
+pip install git+https://github.com/anabenitoterreros/TEPaat.git@main
 # use package
 from TEPaat.che4230project import TEPaat
 test = TEPaat()
