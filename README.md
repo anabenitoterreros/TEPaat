@@ -16,12 +16,17 @@ This repo contains our implementations of the CHE 4230 Advanced Process Control 
 >**docs** contains the other non-related PDF docs. \
 >**reports** contains the analysis (PDF) and figures.
 ## HOW TO USE
-``TEPaat`` was built on Sckit-learn, umap-learn, pandas and numpy framework. 
+``TEPaat`` was built on Sckit-learn, umap-learn, pandas, numpy and openpyxl framework. 
 Though several parts of the notebooks uses other tools. The final package use only 
 the aforemented 4 tools. To install package, do the following:
 ```python
+# create an environment and activate as follows: 
+conda create -n testTEPaatpackage python=3.8.5 
+conda activate testTEPaatpackage
 # install package
 pip install git+https://github.com/anabenitoterreros/TEPaat.git@main
+# ensure that you download + unzip the trained models in https://github.com/anabenitoterreros/TEPaat/blob/main/TEPaat/trained_models.zip
+# into your current working directory. do not charge the name of the uncompressed folder "trained_models"
 # use package
 from TEPaat.che4230project import TEPaat
 test = TEPaat()
